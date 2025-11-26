@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Heads Up! Hackathon coming up!!!</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Favicons -->
+  <link rel="apple-touch-icon" sizes="180x180" href="../Files/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="../Files/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="../Files/favicon-16x16.png">
+  <link rel="manifest" href="../Files/site.webmanifest">
+
+  <!-- Open Graph Meta Tags -->
+  <meta property="og:title" content="Heads Up! Hackathon coming up!!!">
+  <meta property="og:description"
+    content="We need to know the amount of students studying at GNDU that own a Laptop or a Desktop. This data will help us to plan our further sessions and provide valid opportunities to the students.">
+  <meta property="og:image" content="../Files/og-image.png"> <!-- Update this to the image you want to display -->
+  <meta property="og:url" content="https://forms.cyberbuddy.link/induction-24"> <!-- Replace with your actual URL -->
+  <meta property="og:type" content="website">
+
+  <!-- Twitter Card Meta Tags (Optional) -->
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Heads Up! Hackathon coming up!!!">
+  <meta name="twitter:description"
+    content="We need to know the amount of students studying at GNDU that own a Laptop or a Desktop. This data will help us to plan our further sessions and provide valid opportunities to the students.">
+  <meta name="twitter:image" content="../Files/twitter-image.png">
+  <!-- Update this to the image you want to display -->
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@100;200;300;400;500;600;700;800;900&display=swap"
+    rel="stylesheet" />
+
+  <!-- Font Awesome Library -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css"
+    integrity="sha512-KfkfwYDsLkIlwQp6LFnl8zNdLGxu9YAA1QvwINks4PhcElQSvqcyVLLD9aMhXd13uQjoXtEKNosOWaZqXgel0g=="
+    crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+  <!-- For SEO -->
+  <link rel="canonical" href="http://blog.cyberbuddy.io/" />
+
+  <!-- Bootstrap -->
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" type="text/css" href="style.css" />
+  <link rel="stylesheet" type="text/css" href="pass.css" />
+
+  <style>
+    /* Add styles for context menu */
+    #context-menu {
+      display: none;
+      position: fixed;
+      list-style-type: none;
+      /* Keep the menu fixed in the viewport */
+      background: #fff;
+      border: 1px solid #ccc;
+      z-index: 1000;
+      /* Ensure it appears on top of other elements */
+    }
+
+    #context-menu li {
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+
+    #context-menu li:hover {
+      background-color: #f0f0f0;
+    }
+  </style>
+</head>
+
+<body>
+  <div id="snackbar"></div>
+
+  <!-- <section id="login">
+    <div>
+      <h1>Enter the password</h1>
+      <input type="password" id="pass" placeholder="Your Input">
+      <button id="sub">Submit</button>
+    </div>
+  </section> -->
+
+  <section id="data">
+    <table id="table">
+      <tr>
+        <th>Srno.</th>
+        <th>Full Name</th>
+        <th>Mail ID</th>
+        <th>Contact</th>
+        <th>Department</th>
+        <th>Year</th>
+        <th>Selection</th>
+        <th>Expectations</th>
+        <th>Questions for us</th>
+      </tr>
+    </table>
+  </section>
+
+  <ul id="context-menu">
+    <li id="delete-row">Delete Row</li>
+  </ul>
+
+  <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase-analytics.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.9.1/firebase.js"></script>
+
+  <script>
+    // Your web app's Firebase configuration
+    // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+    const firebaseConfig = {
+      apiKey: "AIzaSyD_lLg5hzvqyNwx33GBdH8NkMwzTNeyU58",
+      authDomain: "all-forms-66e2a.firebaseapp.com",
+      databaseURL: "https://all-forms-66e2a-default-rtdb.firebaseio.com",
+      projectId: "all-forms-66e2a",
+      storageBucket: "all-forms-66e2a.appspot.com",
+      messagingSenderId: "581577108602",
+      appId: "1:581577108602:web:60ebe743023f8311905fc3",
+      measurementId: "G-X8J2FP581Q",
+    };
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    firebase.analytics();
+  </script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const contextMenu = document.getElementById('context-menu');
+      const deleteRowOption = document.getElementById('delete-row');
+      let selectedRow = null;
+
+      // Initialize Firebase and table data
+      async function init() {
+        await loadTableData();
+        addContextMenuListener();
+        setupModal();
+      }
+
+      // Load table data from Firebase
+      async function loadTableData() {
+        var db = firebase.database();
+        let count = 1;
+
+        await db.ref("statusbrew/volunteers-for-hackathon").once('value', (snapshot) => {
+          snapshot.forEach((childSnapshot) => {
+            const rowData = childSnapshot.val();
+            const tr = createTableRow(count++, rowData, childSnapshot.key);
+            document.getElementById('table').append(tr);
+          });
+        });
+      }
+
+      // Create a table row element
+      function createTableRow(count, data, key) {
+        const tr = document.createElement('tr');
+        tr.dataset.key = key;
+        const cells = [
+          count,
+          data.name || "Not Entered",
+          data.email || "Not Entered",
+          data.contact || "Not Entered",
+          data.department || "Not Entered",
+          data.year || "Not Entered",
+          data.selection || "Not Entered",
+          data.expectations || "Not Entered",
+          data.feedback || "Not Entered"
+        ];
+
+        cells.forEach(cellData => {
+          const td = document.createElement(cells.indexOf(cellData) === 0 ? 'th' : 'td');
+          td.innerHTML = cellData;
+          tr.appendChild(td);
+        });
+
+        return tr;
+      }
+
+      // Add context menu listener to table rows
+      function addContextMenuListener() {
+        document.querySelectorAll('tr').forEach(row => {
+          row.addEventListener('contextmenu', function (e) {
+            e.preventDefault();
+            selectedRow = this;
+            positionContextMenu(e, this);
+          });
+        });
+      }
+
+      // Position the context menu based on the row's position
+      function positionContextMenu(e, row) {
+        const rect = row.getBoundingClientRect();
+        const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+        const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+        const top = rect.top + scrollTop + e.clientY - rect.top;
+        const left = rect.left + scrollLeft + e.clientX - rect.left;
+
+        contextMenu.style.top = `${top}px`;
+        contextMenu.style.left = `${left}px`;
+        contextMenu.style.display = 'block';
+        contextMenu.style.zIndex = '1000';
+      }
+
+      // Hide context menu on click outside
+      document.addEventListener('click', function (e) {
+        if (!contextMenu.contains(e.target)) {
+          contextMenu.style.display = 'none';
+        }
+      });
+
+      // Handle row deletion
+      deleteRowOption.addEventListener('click', function () {
+        if (selectedRow) {
+          const rowKey = selectedRow.dataset.key;
+          deleteRow(rowKey);
+        }
+      });
+
+      // Delete row data from Firebase and reload the page
+      function deleteRow(key) {
+        var db = firebase.database();
+        db.ref(`statusbrew/volunteers-for-hackathon/${key}`).remove()
+          .then(() => location.reload())
+          .catch(error => console.error("Error deleting data: ", error));
+      }
+
+      // Setup modal functionality
+      function setupModal() {
+        const modal = document.createElement('div');
+        modal.id = 'modal';
+        modal.innerHTML = `
+      <div id="modal-content">
+          <span id="modal-close">&times;</span>
+          <div id="modal-body"></div>
+      </div>`;
+        document.body.appendChild(modal);
+
+        const modalClose = document.getElementById('modal-close');
+        const modalBody = document.getElementById('modal-body');
+
+        modalClose.addEventListener('click', () => modal.style.display = 'none');
+        window.addEventListener('click', (event) => {
+          if (event.target == modal) {
+            modal.style.display = 'none';
+          }
+        });
+      }
+
+      // Initialize everything
+      init();
+    });
+  </script>
+
+  <!-- <script type="text/javascript" src="pass.js"></script> -->
+</body>
+
+</html>
