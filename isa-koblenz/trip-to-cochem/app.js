@@ -27,8 +27,7 @@ function setupDynamicInput(inputFieldId, radioButtonId, labelId) {
   });
 }
 
-setupDynamicInput('departmentOther', 'departmentRadio', 'departmentLabel');
-setupDynamicInput('yearOther', 'yearRadio', 'yearLabel');
+setupDynamicInput('findOther', 'findOtherRadio', 'findOtherLabel');
 
 // document.getElementById('form-1').style.display = 'none';
 
@@ -51,13 +50,11 @@ function snackbar(message) {
 
 function sendMessage() {
   const nameField = document.getElementById("name");
-  const emailField = document.getElementById("mail");
-  const contactField = document.getElementById("number");
-  const selectionField = document.getElementById("selection");
-  const expectationsField = document.getElementById("expectations");
+  const emailField = document.getElementById("email");
+  const numberField = document.getElementById("number");
   const feedbackField = document.getElementById("feed");
-
-  const fields = [nameField, emailField, contactField, selectionField, expectationsField];
+  
+  const fields = [nameField, emailField, numberField];
   for (const field of fields) {
     if (field.value.trim() === '') {
       field.focus();
@@ -65,18 +62,20 @@ function sendMessage() {
       return;
     }
   }
-
-  const department = getRadioValue('department');
-  if (!department) {
-    document.querySelector('input[name="department"]').focus();
-    snackbar("Please select your department preference.");
+  
+  const castle = getRadioValue('castle');
+  if (!castle) {
+    document.querySelector('input[name="castle"]').focus();
+    snackbar("Please select your castle visit preference.");
     return;
   }
 
-  const year = getRadioValue('year');
-  if (!year) {
-    document.querySelector('input[name="year"]').focus();
-    snackbar("Please select your year preference.");
+  const find = getRadioValue('find');
+
+  const consentCheckbox = document.getElementById("consent");
+  if (!consentCheckbox.checked) {
+    consentCheckbox.focus();
+    snackbar("Please check this box to proceed.");
     return;
   }
 
@@ -84,14 +83,12 @@ function sendMessage() {
   document.getElementById("submit_btn").innerHTML = "Loading <i style='margin-left:8px' class='fa fa-spinner spinner'></i>";
 
   const db = firebase.database();
-  db.ref("statusbrew/volunteers-for-hackathon").push({
+  db.ref("isa-koblenz/trip-to-cochem").push({
     name: nameField.value,
     email: emailField.value,
-    contact: contactField.value,
-    department: department,
-    year: year,
-    selection: selectionField.value,
-    expectations: expectationsField.value,
+    number: numberField.value,
+    castle: castle,
+    find: find,
     feedback: feedbackField.value
   })
     .then(() => {
