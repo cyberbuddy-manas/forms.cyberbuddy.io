@@ -78,13 +78,13 @@
 <body>
   <div id="snackbar"></div>
 
-  <!-- <section id="login">
+  <section id="login">
     <div>
       <h1>Enter the password</h1>
       <input type="password" id="pass" placeholder="Your Input">
       <button id="sub">Submit</button>
     </div>
-  </section> -->
+  </section>
 
   <section id="data">
     <table id="table">
@@ -93,10 +93,8 @@
         <th>Full Name</th>
         <th>Mail ID</th>
         <th>Contact</th>
-        <th>Department</th>
-        <th>Year</th>
-        <th>Selection</th>
-        <th>Expectations</th>
+        <th>Castle</th>
+        <th>Find Us</th>
         <th>Questions for us</th>
       </tr>
     </table>
@@ -146,7 +144,7 @@
         var db = firebase.database();
         let count = 1;
 
-        await db.ref("statusbrew/volunteers-for-hackathon").once('value', (snapshot) => {
+        await db.ref("isa-koblenz/trip-to-cochem").once('value', (snapshot) => {
           snapshot.forEach((childSnapshot) => {
             const rowData = childSnapshot.val();
             const tr = createTableRow(count++, rowData, childSnapshot.key);
@@ -163,11 +161,9 @@
           count,
           data.name || "Not Entered",
           data.email || "Not Entered",
-          data.contact || "Not Entered",
-          data.department || "Not Entered",
-          data.year || "Not Entered",
-          data.selection || "Not Entered",
-          data.expectations || "Not Entered",
+          data.number || "Not Entered",
+          data.castle || "Not Entered",
+          data.find || "Not Entered",
           data.feedback || "Not Entered"
         ];
 
